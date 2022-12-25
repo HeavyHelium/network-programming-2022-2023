@@ -1,90 +1,80 @@
-import socket 
-from threading import Thread, activeCount
+import socket
+import threading
+import time
+from typing import Callable
+
+from data_handler import DataHandler
+
+HEADER = 64
+
+PORT = 5050
+SERVER = socket.gethostbyname(socket.gethostname())
+#print(SERVER)
+ADDR = (SERVER, PORT)
+FORMAT = "utf-8"
+DISCONNECT_MESSAGE = "IDISCONNECT"
 
 
-class Server:
-    # I am using my local IP address for the server
-    # a (server, port) tuple
-    SERVER = socket.gethostbyname(socket.gethostname())
-    ADDR = SERVER, 5050
-    # The size of the header, 
-    # which is the first message sent by the client
-    # its meaning is the length of the message to be received in bytes
-    HEADER = 64
-    FORMAT = "utf-8"
-    DISCONNECT_MESSAGE = "!GOTTAGO"
 
+class Server: 
     def __init__(self) -> None:
-        """
-            Creates a new server and binds it to the specified address
-        """
         self._server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        # Bind the socket to this sepcific address
-        self._server.bind(Server.ADDR)
-
-    def handle_client(self, conn, addr) -> None: 
-        """
-            Handle a single client connection to the server
-            :param conn: the socket object representing the connection
-            :param addr: the address of the client
-        """
-        print(f"[NEW CONNECTION] { addr } connected.")
-
-        connected = True
-
-        while connected:
-            msg = self.receive(conn)
-            if not msg is None:
-                    
-                if msg == Server.DISCONNECT_MESSAGE:
-                    connected = False
-
-                print(f"[{ addr }] { msg }")
-                self.send(conn, f"Msg {msg} received")
-        
-        # Client has disconnected
-        conn.close()
-
-    def send(self, conn, msg: str) -> None:
-        """
-            Sends a message to the client
-            :param conn: the socket object representing the connection
-            :param msg: the message to be sent
-        """
-        message = msg.encode(Server.FORMAT)
-        msg_len = len(message)
-        send_len = str(msg_len).encode(Server.FORMAT)
-        send_len += b' ' * (Server.HEADER - len(send_len))
-        conn.send(send_len)
-        conn.send(message)
+        self._server.bind(ADDR)
     
-    def receive(self, conn) -> str:
-        """
-            Receives a message from the client
-            :param conn: the socket object representing the connection
-        """
-        msg_len = int(conn.recv(Server.HEADER).decode(Server.FORMAT))
-        msg = conn.recv(msg_len).decode(Server.FORMAT)
-        return msg
-
     @property
-    def server(self) -> socket.socket:
+    def server(self):
         return self._server
 
-    def start(self) -> None:
-        """
-            Starts the server and listen for connections
-            Handles each connection in a new thread
-        """
+    # the start thread is always running
+    def start(self): 
+        print("[STARTING] Server is starting")
         self.server.listen()
-        print(f"[LISTENING] Server is listening on { Server.SERVER }")
+        print(f"[LISTENING] Server is listening on { SERVER }")
         while True:
-            # con is a socket object, representing the connection
-            conn, addr  = self.server.accept() # wait for a new connection to the server
-            thread = Thread(target=self.handle_client, args=(conn, addr))
+            conn, addr = self.server.accept()
+            thread = threading.Thread(target=self.handle_client, args=(conn, addr))
             thread.start()
-            print(f"[ACTIVE CONNECTIONS] { activeCount() - 1 }") # -1 because the main thread is also running
+            print(f"[ACTIVE CONNECTIONS] { threading.active_count() - 1 }")
 
+    def handle_client(self, conn, addr): 
+        print(f"[NEW CONNECTION] { addr } connected.")
+        connected = True
+
+        while connected: 
+            msg = self.receive(conn)
+            if msg:
+                if msg == DISCONNECT_MESSAGE: 
+                    connected = False
+
+                print(f"From { addr } got: { msg }")
+                
+                self.send(msg, conn)
+        conn.close()
+    
+    def receive(self, conn) -> str: 
+        msg_len = conn.recv(HEADER).decode(FORMAT)
+        # in order to make sure that we're getting a valid mesaage
+        # before we try and convert to an int, i.e. 
+        # it is not simply None
+        # when we connect initially, we receive the empty message 
+        msg = ""
+        if msg_len:
+            msg_len = int(msg_len)
+            msg = conn.recv(msg_len).decode(FORMAT)
+        return msg     
+
+    def send(self, msg, conn): 
+        try: 
+            msg = "The sorted list is: " + DataHandler(msg)()
+        except Exception as e: 
+            msg = f"Something went wrong with processing your data: {e}"
+        
+        message = msg.encode(FORMAT)
+        msg_len = len(message)
+        send_len = str(msg_len).encode(FORMAT)
+        send_len += b' ' * (HEADER - len(send_len))
+        conn.send(send_len)
+        conn.send(message)
 
 if __name__ == "__main__":
     server = Server()

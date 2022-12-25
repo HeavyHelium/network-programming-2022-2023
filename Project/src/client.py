@@ -1,31 +1,53 @@
 import socket
-from server import Server
 
+HEADER = 64
 
+PORT = 5050
 
-class Client:
+FORMAT = "utf-8"
+DISCONNECT_MESSAGE = "IDISCONNECT"
+
+SERVER = socket.gethostbyname(socket.gethostname())
+ADDR = (SERVER, PORT)
+
+class Client: 
     def __init__(self) -> None:
         self._client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self._client.connect(Server.ADDR)
-
+        self._client.connect(ADDR)
+    
     @property
-    def client(self) -> socket.socket:
+    def client(self):
         return self._client
 
-    def send(self, msg: str) -> None:
-        message = msg.encode(Server.FORMAT)
-        msg_len = len(message)
-        send_len = str(msg_len).encode(Server.FORMAT)
-        send_len += b' ' * (Server.HEADER - len(send_len))
-        self.client.send(send_len)
+    def send(self, msg):
+        message = msg.encode(FORMAT)
+        send_len = str(len(message)).encode(FORMAT)
+        send_len += b' ' * (HEADER - len(send_len))
+        self.client.send(send_len) 
         self.client.send(message)
+        print(self.receive()) 
 
     def receive(self) -> str:
-        msg_len = int(self.client.recv(Server.HEADER).decode(Server.FORMAT))
-        msg = self.client.recv(msg_len).decode(Server.FORMAT)
+        msg_len = self.client.recv(HEADER).decode(FORMAT)
+        msg_len = int(msg_len)
+        msg = self.client.recv(msg_len).decode(FORMAT)
         return msg
+    
+    def communiation_loop(self) -> None:
+        msg = "42" # initial value doesn't matter
+        while True:
+            msg = input().strip()
+            if not msg: 
+                continue
+            
+            if msg == DISCONNECT_MESSAGE:
+                self.send(msg)
+                break
+            self.send(msg) 
 
-if __name__ == "main":
-    client = Client()
-    client.send("Hello World!")
-    print(client.receive())
+
+
+if __name__ == "__main__":
+    c = Client()
+    c.communiation_loop()
+

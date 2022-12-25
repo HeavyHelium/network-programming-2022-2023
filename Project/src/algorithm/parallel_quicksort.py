@@ -1,8 +1,8 @@
 from multiprocessing import Process, Pipe, connection
-from sequential_quicksort import seq_quicksort
+from algorithm.sequential_quicksort import seq_quicksort
 import random
 
-def parallel_quicksort(arr: list[int], conn: connection.Connection, proc_num: int) -> None:
+def parallel_quicksort_helper(arr: list[int], conn: connection.Connection, proc_num: int) -> None:
     """
         The idea is to partition the list into two halves, 
         and sort each half in parallel.
@@ -23,9 +23,9 @@ def parallel_quicksort(arr: list[int], conn: connection.Connection, proc_num: in
     # Create a pipe to communate with the child process for the right half
     send_pipe_right, recv_pipe_right = Pipe()
     
-    left_process = Process(target=parallel_quicksort, 
+    left_process = Process(target=parallel_quicksort_helper, 
                            args=(left, recv_pipe_left, proc_num - 1))
-    right_process = Process(target=parallel_quicksort, 
+    right_process = Process(target=parallel_quicksort_helper, 
                             args=(right, recv_pipe_right, proc_num - 1))
 
     left_process.start()
@@ -36,13 +36,18 @@ def parallel_quicksort(arr: list[int], conn: connection.Connection, proc_num: in
     conn.send(send_pipe_left.recv() + [pivot] + send_pipe_right.recv())
     conn.close()
 
+def parallel_quicksort(procs: int, arr: list[int]): 
+    send_pipe, recv_pipe = Pipe()
+    
+    process = Process(target=parallel_quicksort_helper, args=(arr, recv_pipe, procs))
+    process.start()
+    process.join()
+    sorted_arr: list[int] = send_pipe.recv() 
+
+    return sorted_arr   
+
 if __name__ == "__main__":
     # Test the parallel quicksort
     arr: list[int] = [random.randint(0, 100) for _ in range(10)]
-    send_pipe, recv_pipe = Pipe()
-    process = Process(target=parallel_quicksort, args=(arr, recv_pipe, 4))
-    process.start()
-    process.join()
-    sorted_arr: list[int] = send_pipe.recv()
 
-    assert sorted_arr == sorted(arr)
+    assert parallel_quicksort(4, arr) == sorted(arr)
