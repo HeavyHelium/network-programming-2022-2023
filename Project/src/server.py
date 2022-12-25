@@ -42,12 +42,12 @@ class Server:
         while connected: 
             msg = self.receive(conn)
             if msg:
+                print(f"From { addr } got: { msg }")
                 if msg == DISCONNECT_MESSAGE: 
                     connected = False
-
-                print(f"From { addr } got: { msg }")
-                
-                self.send(msg, conn)
+                    self.send("Goodbye!", conn, process_msg=False)
+                else: 
+                    self.send(msg, conn)
         conn.close()
     
     def receive(self, conn) -> str: 
@@ -62,12 +62,13 @@ class Server:
             msg = conn.recv(msg_len).decode(FORMAT)
         return msg     
 
-    def send(self, msg, conn): 
-        try: 
-            msg = "The sorted list is: " + DataHandler(msg)()
-        except Exception as e: 
-            msg = f"Something went wrong with processing your data: {e}"
-        
+    def send(self, msg, conn, process_msg=True):
+        if process_msg: 
+            try: 
+                msg = "The sorted list is: " + DataHandler(msg)()
+            except Exception as e: 
+                msg = f"Something went wrong with processing your data: {e}"
+            
         message = msg.encode(FORMAT)
         msg_len = len(message)
         send_len = str(msg_len).encode(FORMAT)

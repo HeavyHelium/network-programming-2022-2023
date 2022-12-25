@@ -10,6 +10,8 @@ DISCONNECT_MESSAGE = "GOTTAGO"
 SERVER = socket.gethostbyname(socket.gethostname())
 ADDR = (SERVER, PORT)
 
+INPUT_FORMAT = "<number of processes>, <list of numbers>"
+
 class Client: 
     def __init__(self) -> None:
         self._client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -34,8 +36,13 @@ class Client:
         return msg
     
     def communiation_loop(self) -> None:
+        print("Welcome to the parallel quicksort server!")
+        print("Please enter the data in the following format:")
+        print(INPUT_FORMAT)
         msg = "42" # initial value doesn't matter
+       
         while True:
+            print("$ ", end="")
             msg = input().strip()
             if not msg: 
                 continue
