@@ -47,7 +47,6 @@ def parallel_quicksort(procs: int, arr: list[int]):
     return sorted_arr   
 
 if __name__ == "__main__":
-    # Test the parallel quicksort
+    # Simple test for the parallel quicksort
     arr: list[int] = [random.randint(0, 100) for _ in range(10)]
-
     assert parallel_quicksort(4, arr) == sorted(arr)
