@@ -5,7 +5,7 @@ HEADER = 64
 PORT = 5050
 
 FORMAT = "utf-8"
-DISCONNECT_MESSAGE = "IDISCONNECT"
+DISCONNECT_MESSAGE = "GOTTAGO"
 
 SERVER = socket.gethostbyname(socket.gethostname())
 ADDR = (SERVER, PORT)
@@ -39,7 +39,7 @@ class Client:
             msg = input().strip()
             if not msg: 
                 continue
-            
+
             if msg == DISCONNECT_MESSAGE:
                 self.send(msg)
                 break

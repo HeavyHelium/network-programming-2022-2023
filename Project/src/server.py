@@ -12,8 +12,7 @@ SERVER = socket.gethostbyname(socket.gethostname())
 #print(SERVER)
 ADDR = (SERVER, PORT)
 FORMAT = "utf-8"
-DISCONNECT_MESSAGE = "IDISCONNECT"
-
+DISCONNECT_MESSAGE = "GOTTAGO"
 
 
 class Server: 
