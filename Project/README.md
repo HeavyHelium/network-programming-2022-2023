@@ -1,24 +1,33 @@
 # Network Programming Project: Parallel Quicksort Client-Server
-## Formulation\:
+## **Тема: паралелен quicksort/selection sort**
 
-Идеята на проекта по дисциплината Мрежово програмиране е да направите клиент-сървър приложение на някой от следните езици\: C++/Java/**Python**
-
-1. Клиентът подава **входни данни**\: брой нишки, точки на координати и т.н.
-* масивът, който ще бъде сортиран
-
+1. Клиентът подава **входни данни**\:
 * брой процеси
+
+* масивът, който ще бъде сортиран
 
 2. Сървърът\: 
 * изпълнява алгоритъма върху входните данни
 
 * връща резултата на Клиента
 
-**- паралелен quicksort/selection sort**
+* Сървърът е multithreaded, т.е няколко клиенти да могат едновременно да правят заявки към сървъра.
 
-***Бонуси към проекта\:***
+Направено е сравнение между паралелния вариант на quicksort и последователния.
 
-- реализиране на multithreaded сървър – т.е няколко клиенти да могат едновременно да правят заявки към сървъра :white_check_mark:
+## How to run the project
+While in the Project diretory\:
 
-**<u>За проектите с паралелизация\:</u>**
+* Start the server\:
 
-- Да се сравни времето за изпълнение на няколко нишки спрямо една нишка :white_check_mark:
+```sh
+python3 src/server.py
+```
+
+* In order for a client to connect to server
+
+```sh
+python3 src/client.py
+```
+
+Multiple clients can be connected to the server and send their queries. This can be achieved by running the client script from multiple terminals.

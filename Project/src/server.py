@@ -9,13 +9,17 @@ HEADER = 64
 
 PORT = 5050
 SERVER = socket.gethostbyname(socket.gethostname())
-#print(SERVER)
+
 ADDR = (SERVER, PORT)
 FORMAT = "utf-8"
-DISCONNECT_MESSAGE = "GOTTAGO"
 
 
 class Server: 
+    GREET_MSG = "\nWelcome to the parallel quicksort server!\n"
+    DISCONNECT_MESSAGE = "GOTTAGO"
+    FORMAT = "<number of processes>, <list of numbers>"
+    INSTRUCTIONS = f"Please enter data in the following format: {FORMAT}\nTo disconnect, enter {DISCONNECT_MESSAGE}"
+    
     def __init__(self) -> None:
         self._server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._server.bind(ADDR)
@@ -37,13 +41,14 @@ class Server:
 
     def handle_client(self, conn, addr): 
         print(f"[NEW CONNECTION] { addr } connected.")
+        self.send(Server.GREET_MSG + Server.INSTRUCTIONS, conn, process_msg=False)
         connected = True
 
         while connected: 
             msg = self.receive(conn)
             if msg:
                 print(f"From { addr } got: { msg }")
-                if msg == DISCONNECT_MESSAGE: 
+                if msg == Server.DISCONNECT_MESSAGE: 
                     connected = False
                     self.send("Goodbye!", conn, process_msg=False)
                 else: 
@@ -62,7 +67,7 @@ class Server:
             msg = conn.recv(msg_len).decode(FORMAT)
         return msg     
 
-    def send(self, msg, conn, process_msg=True):
+    def send(self, msg: str, conn, process_msg=True):
         if process_msg: 
             try: 
                 msg = "The sorted list is: " + DataHandler(msg)()
