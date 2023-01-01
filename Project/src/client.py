@@ -19,10 +19,10 @@ class Client:
         print(msg)
 
     @property
-    def client(self):
+    def client(self) -> socket.socket:
         return self._client
 
-    def send(self, msg):
+    def send(self, msg: str) -> None:
         message = msg.encode(FORMAT)
         send_len = str(len(message)).encode(FORMAT)
         send_len += b' ' * (HEADER - len(send_len))
