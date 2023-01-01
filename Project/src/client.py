@@ -1,16 +1,15 @@
 import socket
 
-HEADER = 64
 
+HEADER = 64
 PORT = 5050
 
 FORMAT = "utf-8"
 DISCONNECT_MESSAGE = "GOTTAGO"
 
-SERVER = socket.gethostbyname(socket.gethostname())
+#SERVER = socket.gethostbyname(socket.gethostname())
+SERVER = "192.168.0.105"
 ADDR = (SERVER, PORT)
-
-INPUT_FORMAT = "<number of processes>, <list of numbers>"
 
 class Client: 
     def __init__(self) -> None:
