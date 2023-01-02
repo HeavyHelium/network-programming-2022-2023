@@ -72,6 +72,7 @@ class Server:
 
     # the start thread is always running
     def start(self) -> None: 
+        
         print(Status("STARTING", "Server us is starting"))
         self.server.listen()
         print(Status("LISTENING", str(self)))
@@ -84,7 +85,10 @@ class Server:
             print(Status("ACTIVE CONNECTIONS", 
                   str(self.active_connections)))
 
-    def handle_client(self, conn: socket.socket, addr: tuple[str, int]) -> None: 
+    def handle_client(self, 
+                      conn: socket.socket,
+                      addr: tuple[str, int]) -> None: 
+        
         print(Status("NEW CONNECTION", 
                      f"{addr} connected."))
         self.send(Server.GREET_MSG + Server.INSTRUCTIONS, conn, process_msg=False)
@@ -120,7 +124,11 @@ class Server:
             msg = conn.recv(msg_len).decode(FORMAT)
         return msg     
 
-    def send(self, msg: str, conn: socket.socket, process_msg=True) -> None:
+    def send(self, 
+             msg: str, 
+             conn: socket.socket, 
+             process_msg=True) -> None:
+        
         if process_msg: 
             try: 
                 msg = "The sorted list is: " + DataHandler(msg)()

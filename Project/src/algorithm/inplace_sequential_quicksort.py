@@ -1,12 +1,13 @@
 from partition import hoare 
 
-def quicksort_helper(array: list[int], low: int, high: int):
+def quicksort_helper(array: list[int], 
+                     low: int, high: int) -> None:
     if low < high: 
         pi = hoare(array, low, high)
         quicksort_helper(array, low, pi)
         quicksort_helper(array, pi + 1, high)
 
-def quicksort(array: list[int]):
+def quicksort(array: list[int]) -> None:
     quicksort_helper(array, 0, len(array) - 1)     
 
 

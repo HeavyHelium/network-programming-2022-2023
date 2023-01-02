@@ -7,8 +7,8 @@ PORT = 5050
 FORMAT = "utf-8"
 DISCONNECT_MESSAGE = "GOTTAGO"
 
-#SERVER = socket.gethostbyname(socket.gethostname())
-SERVER = "192.168.0.105"
+SERVER = socket.gethostbyname(socket.gethostname())
+#SERVER = "192.168.0.105"
 ADDR = (SERVER, PORT)
 
 class Client: 

@@ -9,7 +9,7 @@ def is_sorted(arr: list[int]) -> bool:
             return False
     return True
 
-def compare_quicksort(N: int):
+def compare_quicksort(N: int) -> None:
     print("==============================================================")
     print("Comparing sequential and parallel quicksort")
     print(f"Given that there are N = {N} randomly chosen elements in list")

@@ -1,4 +1,4 @@
-def hoare(arr: list[int], start: int, end: int):
+def hoare(arr: list[int], start: int, end: int) -> int:
     """Hoare partitioning scheme.
     :param array: The array to partition.
     :param start: The start index of the array.

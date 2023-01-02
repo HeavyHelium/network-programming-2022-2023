@@ -3,11 +3,11 @@ import algorithm.parallel_quicksort as pq
 
 
 class DataHandler:
-    def __init__(self, data: str):
+    def __init__(self, data: str) -> None:
         self._proc_num, self._data = self.parse_data(data)
 
     @staticmethod
-    def parse_data(data) -> tuple[int, list[int]]:
+    def parse_data(data: str) -> tuple[int, list[int]]:
         """
         data format is: number of processes, list of numbers
         format of the list of numbers is: [element1, element2, ..., elementN]

@@ -2,7 +2,9 @@ from multiprocessing import Process, Pipe, connection
 from algorithm.sequential_quicksort import seq_quicksort
 import random
 
-def parallel_quicksort_helper(arr: list[int], conn: connection.Connection, proc_num: int) -> None:
+def parallel_quicksort_helper(arr: list[int], 
+                              conn: connection.Connection, 
+                              proc_num: int) -> None:
     """
         The idea is to partition the list into two halves, 
         and sort each half in parallel.
@@ -25,6 +27,7 @@ def parallel_quicksort_helper(arr: list[int], conn: connection.Connection, proc_
     
     left_process = Process(target=parallel_quicksort_helper, 
                            args=(left, recv_pipe_left, proc_num - 1))
+
     right_process = Process(target=parallel_quicksort_helper, 
                             args=(right, recv_pipe_right, proc_num - 1))
 
@@ -36,7 +39,7 @@ def parallel_quicksort_helper(arr: list[int], conn: connection.Connection, proc_
     conn.send(send_pipe_left.recv() + [pivot] + send_pipe_right.recv())
     conn.close()
 
-def parallel_quicksort(procs: int, arr: list[int]): 
+def parallel_quicksort(procs: int, arr: list[int]) -> list[int]: 
     send_pipe, recv_pipe = Pipe()
     
     process = Process(target=parallel_quicksort_helper, args=(arr, recv_pipe, procs))
