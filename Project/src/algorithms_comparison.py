@@ -16,15 +16,17 @@ def compare_quicksort(N: int) -> None:
     lst = [random.randint(0, 100) for _ in range(N)]
 
 
-    start = time.time()
+    start = time.perf_counter()
     res_seq = seq_quicksort(lst)
-    end = time.time()
+    end = time.perf_counter()
     elapsed_time_seq = end - start
     print(f"Sequential quicksort took {elapsed_time_seq} seconds")
 
-    start = time.time()
+    time.sleep(3)
+
+    start = time.perf_counter()
     res_par = parallel_quicksort(3, lst)
-    end = time.time()
+    end = time.perf_counter()
     elapsed_time_par = end - start
     print(f"Parallel quicksort took {elapsed_time_par} seconds")
 

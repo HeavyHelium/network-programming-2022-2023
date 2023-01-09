@@ -1,5 +1,5 @@
 import socket
-
+from util import Status
 
 HEADER = 64
 PORT = 5050
@@ -34,7 +34,7 @@ class Client:
         msg_len = self.client.recv(HEADER).decode(FORMAT)
         msg_len = int(msg_len)
         msg = self.client.recv(msg_len).decode(FORMAT)
-        return msg
+        return str(Status("RECEIVED", msg))
     
     def communiation_loop(self) -> None:
         msg = "42" # initial value doesn't matter

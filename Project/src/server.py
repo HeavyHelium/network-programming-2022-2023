@@ -2,28 +2,30 @@ import socket
 import threading
 
 from data_handler import DataHandler
+from util import Status
 
 HEADER = 64
 FORMAT = "utf-8"
 
-class Status: 
-    def __init__(self, label: str, msg: str) -> None: 
-        self._label = label
-        self._msg = msg
-
-    def __str__(self) -> str: 
-        return f"[{self._label}]: {self._msg}"
-    
-    def __repr__(self) -> str: 
-        return self._label, self._msg
-
 class Server: 
-    GREET_MSG = "\nWelcome to the parallel quicksort server!\n"
-    DISCONNECT_MSG = "GOTTAGO"
+    Temp = """
+     __      __       .__                             ._.
+    /  \    /  \ ____ |  |   ____  ____   _____   ____| |
+    \   \/\/   // __ \|  | _/ ___\/  _ \ /     \_/ __ \ |
+     \        /\  ___/|  |_\  \__(  <_> )  Y Y  \  ___/\|
+      \__/\  /  \___  >____/\___  >____/|__|_|  /\___  >_
+           \/       \/          \/            \/     \/\/
+    """
     FORMAT = "<number of processes>, <list of numbers>"
+    DISCONNECT_MSG = "GOTTAGO"
+    GREET_MSG = f"""{ Temp }
+    Welcome to the parallel quicksort server! 
     
-    INSTRUCTIONS = f"Please enter data in the following format: \
-    { FORMAT }\nTo disconnect, enter { DISCONNECT_MSG }"
+    Please enter data in the following format: 
+    { FORMAT }
+
+    To disconnect, enter: { DISCONNECT_MSG } 
+    """
 
     ON_DISCONNECT_MSG = "Goodbye!"
 
@@ -55,7 +57,7 @@ class Server:
         return f"Server { self.serv_ip } on port { self.port }" 
 
     def __repr__(self) -> str: 
-        return self.addr
+        return str(self.addr)
 
     @property
     def active_connections(self) -> int:
@@ -73,7 +75,7 @@ class Server:
     # the start thread is always running
     def start(self) -> None: 
         
-        print(Status("STARTING", "Server us is starting"))
+        print(Status("STARTING", "Server is starting..."))
         self.server.listen()
         print(Status("LISTENING", str(self)))
 
@@ -91,7 +93,7 @@ class Server:
         
         print(Status("NEW CONNECTION", 
                      f"{addr} connected."))
-        self.send(Server.GREET_MSG + Server.INSTRUCTIONS, conn, process_msg=False)
+        self.send(Server.GREET_MSG, conn, process_msg=False)
         connected = True
 
         while connected: 
