@@ -1,8 +1,8 @@
 import socket
 import threading
 
-from data_handler import DataHandler
-from util import Status
+from utils.data_handler import DataHandler
+from utils.status import Status
 
 HEADER = 64
 FORMAT = "utf-8"

@@ -1,5 +1,5 @@
 import socket
-from util import Status
+from utils.status import Status
 
 HEADER = 64
 PORT = 5050
