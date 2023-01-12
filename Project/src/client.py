@@ -36,7 +36,7 @@ class Client:
         msg = self.client.recv(msg_len).decode(FORMAT)
         return str(Status("RECEIVED", msg))
     
-    def communiation_loop(self) -> None:
+    def communication_loop(self) -> None:
         msg = "42" # initial value doesn't matter
         while True:
             print("$ ", end="")
@@ -53,5 +53,5 @@ class Client:
 
 if __name__ == "__main__":
     c = Client()
-    c.communiation_loop()
+    c.communication_loop()
 

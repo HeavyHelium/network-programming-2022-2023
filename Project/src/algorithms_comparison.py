@@ -35,4 +35,4 @@ def compare_quicksort(N: int) -> None:
     assert res_seq == res_par
 
 compare_quicksort(100)
-compare_quicksort(10500)
+compare_quicksort(60000)

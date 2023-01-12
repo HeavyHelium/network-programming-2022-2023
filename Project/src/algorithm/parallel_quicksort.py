@@ -9,7 +9,7 @@ def parallel_quicksort_helper(arr: list[int],
         The idea is to partition the list into two halves, 
         and sort each half in parallel.
     """
-    if proc_num <= 0 or len(arr) <= 1:
+    if proc_num <= 0 or len(arr) <= 300:
         conn.send(seq_quicksort(arr))
         conn.close()
         return
